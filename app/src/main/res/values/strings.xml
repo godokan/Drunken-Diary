@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Drunken Diary</string>
+    <string name="drunken_diary">Drunken Diary</string>
+    <string name="btnDetail">상세 보기</string>
+</resources>
