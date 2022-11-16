@@ -42,7 +42,7 @@ public class DetailAccess extends Activity {
 
                 res[resultSet.getPosition()] = type + " " + name + " " + date + " - " + time;
             }
-            ArrayAdapter adapter = new ArrayAdapter(this, R.layout.detailaccess, res);
+            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, res);
             listView.setAdapter(adapter);
         } catch (Exception e) {System.out.println(e);}
 
