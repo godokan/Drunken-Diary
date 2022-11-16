@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         calendarView = (CalendarView) findViewById(R.id.cv1);
         dateView = (TextView) findViewById(R.id.dateView);
         btnDetail = (Button) findViewById(R.id.btnDetail);
