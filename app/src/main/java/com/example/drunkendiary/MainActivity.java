@@ -3,7 +3,9 @@ package com.example.drunkendiary;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.TextView;
@@ -29,14 +31,23 @@ public class MainActivity extends AppCompatActivity {
 
         Date toDay = new Date(calendarView.getDate());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/M/d", Locale.KOREA);
-        String date = simpleDateFormat.format(toDay);
-        dateView.setText(date);
+        final String[] date = {simpleDateFormat.format(toDay)};
+        dateView.setText(date[0]);
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int dayOfMonth) {
-                String date = year + "/" + (month+1) + "/" + dayOfMonth;
-                dateView.setText(date);
+                date[0] = year + "/" + (month+1) + "/" + dayOfMonth;
+                dateView.setText(date[0]);
+            }
+        });
+
+        btnDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), DetailAccess.class);
+                intent.putExtra("Date", date[0]);
+                startActivity(intent);
             }
         });
 
