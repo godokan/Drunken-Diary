@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         btnDetail = (Button) findViewById(R.id.btnDetail);
 
         Date toDay = new Date(calendarView.getDate());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/M/d", Locale.KOREA);
-        final String[] date = {simpleDateFormat.format(toDay)};
+        DateManager dateManager = new DateManager();
+        final String[] date = {dateManager.makeStringDate(toDay)};
         dateView.setText(date[0]);
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {

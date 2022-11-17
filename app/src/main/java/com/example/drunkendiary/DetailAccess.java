@@ -20,6 +20,7 @@ public class DetailAccess extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detailaccess);
+        DateManager dateManager = new DateManager();
 
         ListView listView = (ListView) findViewById(R.id.listView);
         Button btnAdd = (Button) findViewById(R.id.btnAdd);
@@ -49,13 +50,7 @@ public class DetailAccess extends Activity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Date toDay = Calendar.getInstance().getTime();
-                SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/M/d", Locale.KOREA);
-                SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("H:m:s", Locale.KOREA);
-                String Day = simpleDateFormat1.format(toDay);
-                String Time = simpleDateFormat2.format(toDay);
-                String sql = "insert into "+ TableInfo.TABLE_NAME+"("+TableInfo.COLUMN_NAME_DTYPE+", "+TableInfo.COLUMN_NAME_DNAME+", "+TableInfo.COLUMN_NAME_DATE+", "+TableInfo.COLUMN_NAME_TIME+") values (?,?,?,?);";
-                db.execSQL(sql,new String[] {"소주", "새로", Day, Time});
+
             }
         });
     }
