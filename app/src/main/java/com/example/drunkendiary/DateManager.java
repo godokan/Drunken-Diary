@@ -4,27 +4,33 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateManager {
 
     private SimpleDateFormat ymd = new SimpleDateFormat("yyyy/M/d", Locale.KOREA);
     private SimpleDateFormat time = new SimpleDateFormat("H:m:s", Locale.KOREA);
+    private TimeZone timeZone = TimeZone.getTimeZone("Asia/Seoul");
 
     public String getNowDate() {
+        ymd.setTimeZone(timeZone);
         Date now = Calendar.getInstance().getTime();
         return ymd.format(now);
     }
 
     public String getNowTime() {
+        time.setTimeZone(timeZone);
         Date now = Calendar.getInstance().getTime();
         return time.format(now);
     }
 
     public String makeStringDate(Date date) {
+        ymd.setTimeZone(timeZone);
         return ymd.format(date);
     }
 
     public String makeStringTime(Date date) {
+        time.setTimeZone(timeZone);
         return time.format(date);
     }
 }
