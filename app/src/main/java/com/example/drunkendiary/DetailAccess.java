@@ -42,16 +42,7 @@ public class DetailAccess extends Activity {
         DrunkenDbHelper helper = new DrunkenDbHelper(getApplicationContext());
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        ArrayList<String> res = new ArrayList<>(updateList(db, today));
-        adapter = new ItemAdapter(DetailAccess.this);
-        String[][] items = new String[res.size()][];
-        for (int i = 0; i < res.size(); i++){
-            for (String s : res)
-                items[i] = s.split(" ");
-            adapter.addItem(new ListItem(items[i][0],items[i][1]+" "+items[i][2],items[i][3],items[i][4]));
-        }
-        for(String s : res) System.out.println(s);
-        for(String[] s : items) System.out.println(Arrays.toString(s));
+        updateList(db, today);
         listView.setAdapter(adapter);
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +67,7 @@ public class DetailAccess extends Activity {
                             System.out.println("입력 성공");
                             Toast.makeText(getApplicationContext(),"기록 추가 완료", Toast.LENGTH_LONG).show();
                         } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"기록 추가 실패", Toast.LENGTH_LONG).show();}
-
+                        finally {updateList(db, today);}
                     }
                 });
                 dlg.setNegativeButton("취소", null);
@@ -97,11 +88,18 @@ public class DetailAccess extends Activity {
                 String memo = resultSet.getString(3);
                 String date = resultSet.getString(4);
                 String time = resultSet.getString(5);
-                list.add(id + " " + type + " "+ name + " " + memo + " " + date + " "+ time);
+                list.add(id + "☞" + type + "☞"+ name + "☞" + memo + "☞" + date + "☞"+ time);
             }
             resultSet.close();
         } catch (Exception e) {e.printStackTrace();}
-        for(String s : list) System.out.println(s);
+
+        adapter = new ItemAdapter(DetailAccess.this);
+        String[][] items = new String[list.size()][];
+        for (int i = 0; i < list.size(); i++){
+            items[i] = list.get(i).split("☞");
+            adapter.addItem(new ListItem(items[i][0],items[i][1]+" / "+items[i][2],items[i][3],items[i][4]));
+        }
+        listView.setAdapter(adapter);
         return list;
     }
 }
