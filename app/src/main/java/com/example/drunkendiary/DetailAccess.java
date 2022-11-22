@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -16,13 +15,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class DetailAccess extends Activity {
 
     EditText editName, editMemo;
     View dialogView;
     String sql = "";
     Cursor resultSet;
-    ArrayAdapter<String> adapter;
+    ItemAdapter adapter;
     ListView listView;
     DateManager dateManager = new DateManager();
 
@@ -40,20 +42,16 @@ public class DetailAccess extends Activity {
         DrunkenDbHelper helper = new DrunkenDbHelper(getApplicationContext());
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        try {
-            sql = "select "+TableInfo.COLUMN_NAME_DTYPE+","+TableInfo.COLUMN_NAME_DNAME+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_TIME+" from " + TableInfo.TABLE_NAME + " where " + TableInfo.COLUMN_NAME_DATE + " = ?";
-            resultSet = db.rawQuery(sql, new String[]{today});
-        } catch (Exception e) {e.printStackTrace();}
-        String[] res = new String[resultSet.getCount()];
-        while (resultSet.moveToNext()) {
-            String type = resultSet.getString(0);
-            String name = resultSet.getString(1);
-            String date = resultSet.getString(2);
-            String time = resultSet.getString(3);
-
-            res[resultSet.getPosition()] = type + " " + name + " " + date + " - " + time;
+        ArrayList<String> res = new ArrayList<>(updateList(db, today));
+        adapter = new ItemAdapter(DetailAccess.this);
+        String[][] items = new String[res.size()][];
+        for (int i = 0; i < res.size(); i++){
+            for (String s : res)
+                items[i] = s.split(" ");
+            adapter.addItem(new ListItem(items[i][0],items[i][1]+" "+items[i][2],items[i][3],items[i][4]));
         }
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, res);
+        for(String s : res) System.out.println(s);
+        for(String[] s : items) System.out.println(Arrays.toString(s));
         listView.setAdapter(adapter);
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -76,9 +74,9 @@ public class DetailAccess extends Activity {
                                     ") values  (?,?,?,?,?)";
                             db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString(), dateManager.getNowDate(), dateManager.getNowTime()});
                             System.out.println("입력 성공");
-                        } catch (Exception e) {e.printStackTrace();} finally {
                             Toast.makeText(getApplicationContext(),"기록 추가 완료", Toast.LENGTH_LONG).show();
-                        }
+                        } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"기록 추가 실패", Toast.LENGTH_LONG).show();}
+
                     }
                 });
                 dlg.setNegativeButton("취소", null);
@@ -87,5 +85,23 @@ public class DetailAccess extends Activity {
         });
     }
 
-
+    ArrayList<String> updateList(SQLiteDatabase db, String today) {
+        final ArrayList<String> list = new ArrayList<>();
+        try {
+            String sql = "select "+TableInfo.COLUMN_NAME_DTYPE+","+TableInfo.COLUMN_NAME_DNAME+","+TableInfo.COLUMN_NAME_MEMO+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_TIME+","+TableInfo.COLUMN_NAME_ID+" from " + TableInfo.TABLE_NAME + " where " + TableInfo.COLUMN_NAME_DATE + " = ?";
+            Cursor resultSet = db.rawQuery(sql, new String[]{today});
+            while (resultSet.moveToNext()) {
+                String id = resultSet.getString(0);
+                String type = resultSet.getString(1);
+                String name = resultSet.getString(2);
+                String memo = resultSet.getString(3);
+                String date = resultSet.getString(4);
+                String time = resultSet.getString(5);
+                list.add(id + " " + type + " "+ name + " " + memo + " " + date + " "+ time);
+            }
+            resultSet.close();
+        } catch (Exception e) {e.printStackTrace();}
+        for(String s : list) System.out.println(s);
+        return list;
+    }
 }
