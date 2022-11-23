@@ -41,7 +41,6 @@ public class DetailAccess extends Activity {
         SQLiteDatabase db = helper.getWritableDatabase();
 
         updateList(db, today);
-        listView.setAdapter(adapter);
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +55,7 @@ public class DetailAccess extends Activity {
                 ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
                 listItem.getId();
                 dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_detail, null);
-
+                // 코드 추가할 것.
             }
         });
     }
@@ -88,6 +87,7 @@ public class DetailAccess extends Activity {
             items[i] = list.get(i).split("☞");
             adapter.addItem(new ListItem(items[i][0],items[i][1]+" / "+items[i][2],items[i][3],items[i][4], items[i][5]));
         }
+        listView.setAdapter(adapter);
     }
 
     void dlgInitQuery(Context context, String title, SQLiteDatabase db, String day) {
