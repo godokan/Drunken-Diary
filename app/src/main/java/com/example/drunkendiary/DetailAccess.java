@@ -39,6 +39,7 @@ public class DetailAccess extends Activity {
         Button btnAdd = (Button) findViewById(R.id.btnAdd);
         DrunkenDbHelper helper = new DrunkenDbHelper(getApplicationContext());
         SQLiteDatabase db = helper.getWritableDatabase();
+
         updateList(db, today);
         listView.setAdapter(adapter);
 
@@ -53,12 +54,14 @@ public class DetailAccess extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
-                System.out.println(listItem.getId());
+                listItem.getId();
+                dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_detail, null);
+
             }
         });
     }
 
-    ArrayList<String> updateList(SQLiteDatabase db, String day) {
+    ArrayList<String> getSqlList(SQLiteDatabase db, String day) {
         final ArrayList<String> list = new ArrayList<>();
         try {
             String sql = "select "+TableInfo.COLUMN_NAME_DTYPE+","+TableInfo.COLUMN_NAME_DNAME+","+TableInfo.COLUMN_NAME_MEMO+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_TIME+","+TableInfo.COLUMN_NAME_ID+" from " + TableInfo.TABLE_NAME + " where " + TableInfo.COLUMN_NAME_DATE + " = ?";
@@ -74,18 +77,21 @@ public class DetailAccess extends Activity {
             }
             resultSet.close();
         } catch (Exception e) {e.printStackTrace();}
+        return list;
+    }
+
+    void updateList(SQLiteDatabase db, String day) {
+        ArrayList<String> list = getSqlList(db, day);
         adapter = new ItemAdapter(DetailAccess.this);
         String[][] items = new String[list.size()][];
         for (int i = 0; i < list.size(); i++){
             items[i] = list.get(i).split("☞");
             adapter.addItem(new ListItem(items[i][0],items[i][1]+" / "+items[i][2],items[i][3],items[i][4], items[i][5]));
         }
-        listView.setAdapter(adapter);
-        return list;
     }
 
     void dlgInitQuery(Context context, String title, SQLiteDatabase db, String day) {
-        dialogView = (View) View.inflate(context, R.layout.dialoginit,null);
+        dialogView = (View) View.inflate(context, R.layout.dialog_init,null);
         RadioGroup drinkType = (RadioGroup) dialogView.findViewById(R.id.drinkType);
         editName = dialogView.findViewById(R.id.editName);
         editMemo = dialogView.findViewById(R.id.editMemo);
