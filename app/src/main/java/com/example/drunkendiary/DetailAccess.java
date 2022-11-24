@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -55,7 +56,19 @@ public class DetailAccess extends Activity {
                 ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
                 listItem.getId();
                 dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_detail, null);
-                // 코드 추가할 것.
+                TextView dp = (TextView) dialogView.findViewById(R.id.dtype);
+                TextView nm = (TextView) dialogView.findViewById(R.id.name);
+                TextView mm = (TextView) dialogView.findViewById(R.id.memo);
+                TextView dt = (TextView) dialogView.findViewById(R.id.date);
+                TextView tm = (TextView) dialogView.findViewById(R.id.time);
+                Button btnEdt = (Button) dialogView.findViewById(R.id.btnEdit);
+                Button btnRmv = (Button) dialogView.findViewById(R.id.btnRemove);
+
+                AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
+                dlg.setTitle("상세보기");
+                dlg.setView(dialogView);
+                dlg.setNegativeButton("닫기", null);
+                dlg.show();
             }
         });
     }

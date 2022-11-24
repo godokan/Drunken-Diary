@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:text="수정하기"/>
         <Button
-            android:id="@+id/btnRenove"
+            android:id="@+id/btnRemove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="삭제하기"/>
