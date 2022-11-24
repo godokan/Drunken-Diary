@@ -2,6 +2,7 @@ package com.example.drunkendiary;
 
 import static android.view.View.*;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class ItemAdapter extends BaseAdapter {
         return i;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ListItem listItem = items.get(i);
@@ -48,7 +50,7 @@ public class ItemAdapter extends BaseAdapter {
         TextView time = itemView.findViewById(R.id.time);
 
         dType.setText(listItem.getDtype());
-        description.setText(listItem.getDescription());
+        description.setText(listItem.getName()+" / "+listItem.getMemo());
         date.setText(listItem.getDate());
         time.setText(listItem.getTime());
 

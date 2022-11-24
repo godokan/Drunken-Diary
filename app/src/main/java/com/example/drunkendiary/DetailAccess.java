@@ -54,7 +54,8 @@ public class DetailAccess extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
-                listItem.getId();
+
+                System.out.println(listItem.getId());
                 dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_detail, null);
                 TextView dp = (TextView) dialogView.findViewById(R.id.dtype);
                 TextView nm = (TextView) dialogView.findViewById(R.id.name);
@@ -63,6 +64,12 @@ public class DetailAccess extends Activity {
                 TextView tm = (TextView) dialogView.findViewById(R.id.time);
                 Button btnEdt = (Button) dialogView.findViewById(R.id.btnEdit);
                 Button btnRmv = (Button) dialogView.findViewById(R.id.btnRemove);
+
+                dp.setText(listItem.getDtype());
+                nm.setText(listItem.getName());
+                mm.setText(listItem.getMemo());
+                dt.setText(listItem.getDate());
+                tm.setText(listItem.getTime());
 
                 AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
                 dlg.setTitle("상세보기");
@@ -98,7 +105,7 @@ public class DetailAccess extends Activity {
         String[][] items = new String[list.size()][];
         for (int i = 0; i < list.size(); i++){
             items[i] = list.get(i).split("☞");
-            adapter.addItem(new ListItem(items[i][0],items[i][1]+" / "+items[i][2],items[i][3],items[i][4], items[i][5]));
+            adapter.addItem(new ListItem(items[i][0],items[i][1],items[i][2],items[i][3],items[i][4], items[i][5]));
         }
         listView.setAdapter(adapter);
     }
