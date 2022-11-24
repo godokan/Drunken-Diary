@@ -53,9 +53,10 @@ public class DetailAccess extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
+                AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
+                AlertDialog alert = dlg.create();
 
-                System.out.println(listItem.getId());
+                ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
                 dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_detail, null);
                 TextView dp = (TextView) dialogView.findViewById(R.id.dtype);
                 TextView nm = (TextView) dialogView.findViewById(R.id.name);
@@ -71,13 +72,51 @@ public class DetailAccess extends Activity {
                 dt.setText(listItem.getDate());
                 tm.setText(listItem.getTime());
 
-                AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
-                dlg.setTitle("상세보기");
+                btnEdt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+
+                btnRmv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(sqlRemove(db, listItem.getId(), today);)
+                            alert.dismiss();
+                    }
+                });
+
                 dlg.setView(dialogView);
+                dlg.setTitle(" ");
                 dlg.setNegativeButton("닫기", null);
                 dlg.show();
             }
         });
+    }
+
+    boolean sqlRemove(SQLiteDatabase db, String ID, String day) {
+        final boolean[] flag = new boolean[1];
+        AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
+        AlertDialog alert = dlg.create();
+        dlg.setTitle("기록삭제");
+        dlg.setMessage("삭제하시겠습니까?");
+        dlg.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    sql = "delete from "+TableInfo.TABLE_NAME+" where id="+ID;
+                    db.execSQL(sql);
+                    Toast.makeText(DetailAccess.this, "삭제했습니다.", Toast.LENGTH_LONG).show();
+                } catch (Exception e) {e.printStackTrace();}
+                updateList(db, day);
+                alert.dismiss();
+                flag[0] = true;
+            }
+        });
+        dlg.setNegativeButton("취소", null);
+        dlg.show();
+        return flag[0];
     }
 
     ArrayList<String> getSqlList(SQLiteDatabase db, String day) {
