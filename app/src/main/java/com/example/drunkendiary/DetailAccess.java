@@ -2,17 +2,20 @@ package com.example.drunkendiary;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -50,11 +53,36 @@ public class DetailAccess extends Activity {
             }
         });
 
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
+                PopupMenu popupMenu = new PopupMenu(DetailAccess.this, view);
+                getMenuInflater().inflate(R.menu.edit_list,popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()){
+                            case R.id.editItem:
+                                break;
+                            case  R.id.removeItem:
+                                sqlRemove(db, listItem.getId(), today);
+                                break;
+                            default:
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+                return true;
+            }
+        });
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
-                AlertDialog alert = dlg.create();
 
                 ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
                 dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_detail, null);
@@ -63,29 +91,12 @@ public class DetailAccess extends Activity {
                 TextView mm = (TextView) dialogView.findViewById(R.id.memo);
                 TextView dt = (TextView) dialogView.findViewById(R.id.date);
                 TextView tm = (TextView) dialogView.findViewById(R.id.time);
-                Button btnEdt = (Button) dialogView.findViewById(R.id.btnEdit);
-                Button btnRmv = (Button) dialogView.findViewById(R.id.btnRemove);
 
                 dp.setText(listItem.getDtype());
                 nm.setText(listItem.getName());
                 mm.setText(listItem.getMemo());
                 dt.setText(listItem.getDate());
                 tm.setText(listItem.getTime());
-
-                btnEdt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });
-
-                btnRmv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(sqlRemove(db, listItem.getId(), today);)
-                            alert.dismiss();
-                    }
-                });
 
                 dlg.setView(dialogView);
                 dlg.setTitle(" ");
@@ -95,8 +106,7 @@ public class DetailAccess extends Activity {
         });
     }
 
-    boolean sqlRemove(SQLiteDatabase db, String ID, String day) {
-        final boolean[] flag = new boolean[1];
+    void sqlRemove(SQLiteDatabase db, String ID, String day) {
         AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
         AlertDialog alert = dlg.create();
         dlg.setTitle("기록삭제");
@@ -111,12 +121,10 @@ public class DetailAccess extends Activity {
                 } catch (Exception e) {e.printStackTrace();}
                 updateList(db, day);
                 alert.dismiss();
-                flag[0] = true;
             }
         });
         dlg.setNegativeButton("취소", null);
         dlg.show();
-        return flag[0];
     }
 
     ArrayList<String> getSqlList(SQLiteDatabase db, String day) {
