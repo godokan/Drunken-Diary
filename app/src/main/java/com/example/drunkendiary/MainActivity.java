@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Drunken Diary");
 
         calendarView = (CalendarView) findViewById(R.id.cv1);
         dateView = (TextView) findViewById(R.id.dateView);
@@ -40,11 +42,14 @@ public class MainActivity extends AppCompatActivity {
         DrunkenDbHelper helper = DrunkenDbHelper.getInstance(MainActivity.this);
         SQLiteDatabase db = helper.getWritableDatabase();
 
+        updateCount(db,date[0]);
+
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int dayOfMonth) {
                 date[0] = year + "/" + (month+1) + "/" + dayOfMonth;
                 dateView.setText(date[0]);
+                updateCount(db,date[0]);
             }
         });
 
@@ -58,7 +63,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void updateCount(){
-
+    void updateCount(SQLiteDatabase db, String date){
+        String count = "";
+        try {
+            sql = "select count(*) from "+TableInfo.TABLE_NAME+" where "+TableInfo.COLUMN_NAME_DATE+" = ?";
+            Cursor resultSet = db.rawQuery(sql, new String[]{date});
+            while (resultSet.moveToNext()) {
+                count = resultSet.getString(0);
+            }
+            resultSet.close();
+        } catch (Exception e) {e.printStackTrace();}
+        sqlNum.setText(count);
     }
 }
