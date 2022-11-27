@@ -22,23 +22,43 @@
             android:layout_margin="10dp"
             android:background="@color/white"
             android:id="@+id/cv1"/>
-        <!--      본 텍스트 뷰의 텍스트는 선택된 날짜를 표시하도록 할 것      -->
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:gravity="center"
-            android:background="@color/white"
-            android:textColor="@color/black"
-            android:text="1970-01-01"
-            android:id="@+id/dateView"
-            tools:ignore="HardcodedText"
-            />
+            android:orientation="horizontal"
+            android:background="@color/white">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="1970-01-01"
+                android:id="@+id/dateView"
+                tools:ignore="HardcodedText"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/black"
+                android:text="기록 수 :"
+                tools:ignore="HardcodedText"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/black"
+                android:text="0"
+                android:id="@+id/sqlNum"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:layout_margin="10dp"
+            android:background="@color/white"
             android:text="@string/btnDetail"
             android:id="@+id/btnDetail"/>
     </LinearLayout>

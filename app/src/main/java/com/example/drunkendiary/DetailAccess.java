@@ -40,7 +40,7 @@ public class DetailAccess extends Activity {
 
         listView = (ListView) findViewById(R.id.listView);
         Button btnAdd = (Button) findViewById(R.id.btnAdd);
-        DrunkenDbHelper helper = new DrunkenDbHelper(getApplicationContext());
+        DrunkenDbHelper helper = DrunkenDbHelper.getInstance(DetailAccess.this);
         SQLiteDatabase db = helper.getWritableDatabase();
         updateList(db, today);
 

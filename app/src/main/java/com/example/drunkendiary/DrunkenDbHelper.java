@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class DrunkenDbHelper extends SQLiteOpenHelper {
+    private static DrunkenDbHelper drunkenDbHelper = null;
 
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Drunk.db";
@@ -22,6 +23,11 @@ public class DrunkenDbHelper extends SQLiteOpenHelper {
 
     public DrunkenDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static DrunkenDbHelper getInstance(Context context) {
+        if(drunkenDbHelper == null) drunkenDbHelper = new DrunkenDbHelper(context);
+        return drunkenDbHelper;
     }
 
     @Override
