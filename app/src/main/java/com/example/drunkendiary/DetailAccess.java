@@ -28,7 +28,7 @@ public class DetailAccess extends Activity {
     View dialogView;
     ItemAdapter adapter;
     ListView listView;
-    DateManager dateManager = new DateManager();
+    DateHelper dateHelper = new DateHelper();
     String sql = "";
 
     @Override
@@ -151,7 +151,7 @@ public class DetailAccess extends Activity {
                     sql = "insert into "+ TableInfo.TABLE_NAME+
                             "("+TableInfo.COLUMN_NAME_DTYPE+","+ TableInfo.COLUMN_NAME_DNAME+","+TableInfo.COLUMN_NAME_MEMO+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_TIME+
                             ") values  (?,?,?,?,?)";
-                    db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString(), dateManager.getNowDate(), dateManager.getNowTime()});
+                    db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString(), dateHelper.getNowDate(), dateHelper.getNowTime()});
                     System.out.println("입력 성공");
                     Toast.makeText(getApplicationContext(),"입력 완료", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"입력 실패", Toast.LENGTH_LONG).show();}

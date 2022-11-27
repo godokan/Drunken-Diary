@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class DateManager {
+public class DateHelper {
 
     private SimpleDateFormat ymd = new SimpleDateFormat("yyyy/M/d", Locale.KOREA);
     private SimpleDateFormat time = new SimpleDateFormat("H:m:s", Locale.KOREA);

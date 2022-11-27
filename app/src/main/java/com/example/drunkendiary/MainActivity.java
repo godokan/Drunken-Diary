@@ -1,6 +1,5 @@
 package com.example.drunkendiary;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -12,9 +11,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,18 +32,18 @@ public class MainActivity extends AppCompatActivity {
         btnDetail = (Button) findViewById(R.id.btnDetail);
 
         Date toDay = new Date(calendarView.getDate());
-        DateManager dateManager = new DateManager();
-        final String[] date = {dateManager.makeStringDate(toDay)};
-        dateView.setText(date[0]);
+        DateHelper dateHelper = new DateHelper();
+        final String[] date = {dateHelper.makeStringDate(toDay)};
 
         DrunkenDbHelper helper = DrunkenDbHelper.getInstance(MainActivity.this);
         SQLiteDatabase db = helper.getWritableDatabase();
 
+        dateView.setText(date[0]);
         updateCount(db,date[0]);
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
-            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int dayOfMonth) {
+            public void onSelectedDayChange(CalendarView calendarView, int year, int month, int dayOfMonth) {
                 date[0] = year + "/" + (month+1) + "/" + dayOfMonth;
                 dateView.setText(date[0]);
                 updateCount(db,date[0]);
