@@ -8,9 +8,9 @@ import java.util.TimeZone;
 
 public class DateHelper {
 
-    private SimpleDateFormat ymd = new SimpleDateFormat("yyyy/M/d", Locale.KOREA);
-    private SimpleDateFormat time = new SimpleDateFormat("H:m:s", Locale.KOREA);
-    private TimeZone timeZone = TimeZone.getTimeZone("Asia/Seoul");
+    private final SimpleDateFormat ymd = new SimpleDateFormat("yyyy/M/d", Locale.KOREA);
+    private final SimpleDateFormat time = new SimpleDateFormat("H:m:s", Locale.KOREA);
+    private final TimeZone timeZone = TimeZone.getTimeZone("Asia/Seoul");
 
     public String getNowDate() {
         ymd.setTimeZone(timeZone);
