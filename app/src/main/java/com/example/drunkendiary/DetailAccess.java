@@ -3,14 +3,11 @@ package com.example.drunkendiary;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -38,70 +35,50 @@ public class DetailAccess extends Activity {
         Intent intent = getIntent();
         final String today = intent.getStringExtra("Date");
 
-        listView = (ListView) findViewById(R.id.listView);
-        Button btnAdd = (Button) findViewById(R.id.btnAdd);
+        listView = findViewById(R.id.listView);
+        Button btnAdd = findViewById(R.id.btnAdd);
         DrunkenDbHelper helper = DrunkenDbHelper.getInstance(DetailAccess.this);
         SQLiteDatabase db = helper.getWritableDatabase();
         updateList(db, today);
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sqlInit(DetailAccess.this, db, today);
-            }
+        btnAdd.setOnClickListener(view -> sqlInit(DetailAccess.this, db, today));
+
+        listView.setOnItemLongClickListener((adapterView, view, position, id) -> {
+            ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
+            PopupMenu popupMenu = new PopupMenu(DetailAccess.this, view);
+            getMenuInflater().inflate(R.menu.edit_list,popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(menuItem -> {
+                if(menuItem.getItemId() == R.id.editItem)
+                    sqlEdit(db, listItem.getId(),today);
+                else if(menuItem.getItemId() == R.id.removeItem)
+                    sqlRemove(db, listItem.getId(), today);
+                return false;
+            });
+            popupMenu.show();
+            return true;
         });
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-                ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
-                PopupMenu popupMenu = new PopupMenu(DetailAccess.this, view);
-                getMenuInflater().inflate(R.menu.edit_list,popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()){
-                            case R.id.editItem:
-                                sqlEdit(db, listItem.getId(),today);
-                                break;
-                            case  R.id.removeItem:
-                                sqlRemove(db, listItem.getId(), today);
-                                break;
-                            default:
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();
-                return true;
-            }
-        });
+        listView.setOnItemClickListener((adapterView, view, position, id) -> {
+            AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
+            ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
+            dialogView = View.inflate(DetailAccess.this, R.layout.dialog_detail, null);
+            TextView dp = dialogView.findViewById(R.id.dtype);
+            TextView nm = dialogView.findViewById(R.id.name);
+            TextView mm = dialogView.findViewById(R.id.memo);
+            TextView dt = dialogView.findViewById(R.id.date);
+            TextView tm = dialogView.findViewById(R.id.time);
 
-                ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
-                dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_detail, null);
-                TextView dp = (TextView) dialogView.findViewById(R.id.dtype);
-                TextView nm = (TextView) dialogView.findViewById(R.id.name);
-                TextView mm = (TextView) dialogView.findViewById(R.id.memo);
-                TextView dt = (TextView) dialogView.findViewById(R.id.date);
-                TextView tm = (TextView) dialogView.findViewById(R.id.time);
+            dp.setText(listItem.getDtype());
+            nm.setText(listItem.getName());
+            mm.setText(listItem.getMemo());
+            dt.setText(listItem.getDate());
+            tm.setText(listItem.getTime());
 
-                dp.setText(listItem.getDtype());
-                nm.setText(listItem.getName());
-                mm.setText(listItem.getMemo());
-                dt.setText(listItem.getDate());
-                tm.setText(listItem.getTime());
-
-                dlg.setView(dialogView);
-                dlg.setTitle(" ");
-                dlg.setNegativeButton("닫기", null);
-                dlg.show();
-            }
+            dlg.setView(dialogView);
+            dlg.setTitle(" ");
+            dlg.setNegativeButton("닫기", null);
+            dlg.show();
         });
     }
 
@@ -136,53 +113,46 @@ public class DetailAccess extends Activity {
     }
 
     void sqlInit(Context context, SQLiteDatabase db, String day) {
-        dialogView = (View) View.inflate(context, R.layout.dialog_init,null);
-        RadioGroup drinkType = (RadioGroup) dialogView.findViewById(R.id.drinkType);
+        dialogView = View.inflate(context, R.layout.dialog_init,null);
+        RadioGroup drinkType = dialogView.findViewById(R.id.drinkType);
         editName = dialogView.findViewById(R.id.editName);
         editMemo = dialogView.findViewById(R.id.editMemo);
         AlertDialog.Builder dlg = new AlertDialog.Builder(context);
         dlg.setTitle("기록 추가");
         dlg.setView(dialogView);
-        dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                RadioButton checked = (RadioButton) dialogView.findViewById(drinkType.getCheckedRadioButtonId());
-                try {
-                    sql = "insert into "+ TableInfo.TABLE_NAME+
-                            "("+TableInfo.COLUMN_NAME_DTYPE+","+ TableInfo.COLUMN_NAME_DNAME+","+TableInfo.COLUMN_NAME_MEMO+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_TIME+
-                            ") values  (?,?,?,?,?)";
-                    db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString(), dateHelper.getNowDate(), dateHelper.getNowTime()});
-                    System.out.println("입력 성공");
-                    Toast.makeText(getApplicationContext(),"입력 완료", Toast.LENGTH_LONG).show();
-                } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"입력 실패", Toast.LENGTH_LONG).show();}
-                finally {updateList(db, day);}
-            }
+        dlg.setPositiveButton("확인", (dialogInterface, i) -> {
+            RadioButton checked = dialogView.findViewById(drinkType.getCheckedRadioButtonId());
+            try {
+                sql = "insert into "+ TableInfo.TABLE_NAME+
+                        "("+TableInfo.COLUMN_NAME_DTYPE+","+ TableInfo.COLUMN_NAME_DNAME+","+TableInfo.COLUMN_NAME_MEMO+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_TIME+
+                        ") values  (?,?,?,?,?)";
+                db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString(), dateHelper.getNowDate(), dateHelper.getNowTime()});
+                System.out.println("입력 성공");
+                Toast.makeText(getApplicationContext(),"입력 완료", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"입력 실패", Toast.LENGTH_LONG).show();}
+            finally {updateList(db, day);}
         });
         dlg.setNegativeButton("취소", null);
         dlg.show();
     }
 
     void sqlEdit(SQLiteDatabase db, String ID, String day) {
-        dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_init,null);
-        RadioGroup drinkType = (RadioGroup) dialogView.findViewById(R.id.drinkType);
+        dialogView = View.inflate(DetailAccess.this, R.layout.dialog_init,null);
+        RadioGroup drinkType = dialogView.findViewById(R.id.drinkType);
         editName = dialogView.findViewById(R.id.editName);
         editMemo = dialogView.findViewById(R.id.editMemo);
         AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
-        AlertDialog alert = dlg.create();
         dlg.setTitle("기록수정");
         dlg.setView(dialogView);
-        dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                RadioButton checked = (RadioButton) dialogView.findViewById(drinkType.getCheckedRadioButtonId());
-                try {
-                    sql = "update "+TableInfo.TABLE_NAME+" set "+TableInfo.COLUMN_NAME_DTYPE+" = ?,"+ TableInfo.COLUMN_NAME_DNAME+" = ?,"+TableInfo.COLUMN_NAME_MEMO+"= ? where "+TableInfo.COLUMN_NAME_ID+" = "+ID;
-                    db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString()});
-                    System.out.println("수정 성공");
-                    Toast.makeText(getApplicationContext(),"수정 완료", Toast.LENGTH_LONG).show();
-                } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"수정 실패", Toast.LENGTH_LONG).show();}
-                finally {updateList(db, day);}
-            }
+        dlg.setPositiveButton("확인", (dialogInterface, i) -> {
+            RadioButton checked = dialogView.findViewById(drinkType.getCheckedRadioButtonId());
+            try {
+                sql = "update "+TableInfo.TABLE_NAME+" set "+TableInfo.COLUMN_NAME_DTYPE+" = ?,"+ TableInfo.COLUMN_NAME_DNAME+" = ?,"+TableInfo.COLUMN_NAME_MEMO+"= ? where "+TableInfo.COLUMN_NAME_ID+" = "+ID;
+                db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString()});
+                System.out.println("수정 성공");
+                Toast.makeText(getApplicationContext(),"수정 완료", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"수정 실패", Toast.LENGTH_LONG).show();}
+            finally {updateList(db, day);}
         });
         dlg.setNegativeButton("취소", null);
         dlg.show();
@@ -193,17 +163,14 @@ public class DetailAccess extends Activity {
         AlertDialog alert = dlg.create();
         dlg.setTitle("기록삭제");
         dlg.setMessage("삭제하시겠습니까?");
-        dlg.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                try {
-                    sql = "delete from "+TableInfo.TABLE_NAME+" where id="+ID;
-                    db.execSQL(sql);
-                    Toast.makeText(DetailAccess.this, "삭제했습니다.", Toast.LENGTH_LONG).show();
-                } catch (Exception e) {e.printStackTrace();}
-                updateList(db, day);
-                alert.dismiss();
-            }
+        dlg.setPositiveButton("삭제", (dialogInterface, i) -> {
+            try {
+                sql = "delete from "+TableInfo.TABLE_NAME+" where id="+ID;
+                db.execSQL(sql);
+                Toast.makeText(DetailAccess.this, "삭제했습니다.", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {e.printStackTrace();}
+            updateList(db, day);
+            alert.dismiss();
         });
         dlg.setNegativeButton("취소", null);
         dlg.show();
