@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,8 +31,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:layout_marginEnd="8dp"
             android:text="DATE" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp"
+            android:text="기록한 시간 :" />
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
@@ -39,17 +52,33 @@
             android:text="TIME" />
     </LinearLayout>
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_margin="10dp"
+        android:text="@string/drinkName" />
+    <TextView
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:text="name"
-        android:layout_margin="10dp"/>
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_margin="10dp"
+        android:text="@string/memo" />
     <TextView
         android:id="@+id/memo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:text="memo"
-        android:layout_margin="10dp"/>
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"/>
 </LinearLayout>

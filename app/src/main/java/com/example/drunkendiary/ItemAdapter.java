@@ -47,12 +47,10 @@ public class ItemAdapter extends BaseAdapter {
         TextView dType = itemView.findViewById(R.id.dtype);
         TextView description = itemView.findViewById(R.id.description);
         TextView date = itemView.findViewById(R.id.date);
-        TextView time = itemView.findViewById(R.id.time);
 
         dType.setText(listItem.getDtype());
         description.setText(listItem.getName()+" / "+listItem.getMemo());
         date.setText(listItem.getDate());
-        time.setText(listItem.getTime());
 
         return itemView;
     }

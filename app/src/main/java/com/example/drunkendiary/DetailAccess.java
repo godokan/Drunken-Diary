@@ -117,8 +117,9 @@ public class DetailAccess extends Activity {
         RadioGroup drinkType = dialogView.findViewById(R.id.drinkType);
         editName = dialogView.findViewById(R.id.editName);
         editMemo = dialogView.findViewById(R.id.editMemo);
+        TextView title = dialogView.findViewById(R.id.title);
+        title.setText("기록 추가");
         AlertDialog.Builder dlg = new AlertDialog.Builder(context);
-        dlg.setTitle("기록 추가");
         dlg.setView(dialogView);
         dlg.setPositiveButton("확인", (dialogInterface, i) -> {
             RadioButton checked = dialogView.findViewById(drinkType.getCheckedRadioButtonId());
@@ -126,7 +127,7 @@ public class DetailAccess extends Activity {
                 sql = "insert into "+ TableInfo.TABLE_NAME+
                         "("+TableInfo.COLUMN_NAME_DTYPE+","+ TableInfo.COLUMN_NAME_DNAME+","+TableInfo.COLUMN_NAME_MEMO+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_TIME+
                         ") values  (?,?,?,?,?)";
-                db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString(), dateHelper.getNowDate(), dateHelper.getNowTime()});
+                db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString(), day, dateHelper.getNowDate()});
                 System.out.println("입력 성공");
                 Toast.makeText(getApplicationContext(),"입력 완료", Toast.LENGTH_LONG).show();
             } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"입력 실패", Toast.LENGTH_LONG).show();}
@@ -141,8 +142,9 @@ public class DetailAccess extends Activity {
         RadioGroup drinkType = dialogView.findViewById(R.id.drinkType);
         editName = dialogView.findViewById(R.id.editName);
         editMemo = dialogView.findViewById(R.id.editMemo);
+        TextView title = dialogView.findViewById(R.id.title);
+        title.setText("기록 수정");
         AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
-        dlg.setTitle("기록수정");
         dlg.setView(dialogView);
         dlg.setPositiveButton("확인", (dialogInterface, i) -> {
             RadioButton checked = dialogView.findViewById(drinkType.getCheckedRadioButtonId());
