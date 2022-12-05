@@ -1,4 +1,4 @@
-package com.example.drunkendiary;
+package com.godokan.drunkendiary;
 
 public class TableInfo {
     public static final String TABLE_NAME = "Drunk";

@@ -1,4 +1,4 @@
-package com.example.drunkendiary;
+package com.godokan.drunkendiary;
 
 import android.app.Activity;
 import android.app.AlertDialog;

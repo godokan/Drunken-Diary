@@ -1,4 +1,4 @@
-package com.example.drunkendiary;
+package com.godokan.drunkendiary;
 
 public class ListItem {
     private final String id;

@@ -1,4 +1,4 @@
-package com.example.drunkendiary;
+package com.godokan.drunkendiary;
 
 import androidx.appcompat.app.AppCompatActivity;
 

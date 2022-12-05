@@ -1,4 +1,4 @@
-package com.example.drunkendiary;
+package com.godokan.drunkendiary;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
