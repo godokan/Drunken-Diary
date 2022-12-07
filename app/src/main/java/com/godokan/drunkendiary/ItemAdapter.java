@@ -7,6 +7,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -47,6 +48,19 @@ public class ItemAdapter extends BaseAdapter {
         TextView dType = itemView.findViewById(R.id.dtype);
         TextView description = itemView.findViewById(R.id.description);
         TextView date = itemView.findViewById(R.id.date);
+        ImageView icon = itemView.findViewById(R.id.icon);
+
+        switch (listItem.getDtype()) {
+            case "소주":
+                icon.setImageResource(R.drawable.drunken_soju);
+                break;
+            case "맥주":
+                icon.setImageResource(R.drawable.drunken_beer);
+                break;
+            case "양주":
+                icon.setImageResource(R.drawable.drunken_west);
+                break;
+        }
 
         dType.setText(listItem.getDtype());
         description.setText(listItem.getName()+" / "+listItem.getMemo());

@@ -2,7 +2,6 @@ package com.godokan.drunkendiary;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -32,6 +31,8 @@ public class DetailAccess extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detailaccess);
+        setTitle("취한달력");
+
         Intent intent = getIntent();
         final String today = intent.getStringExtra("Date");
 
@@ -41,7 +42,7 @@ public class DetailAccess extends Activity {
         SQLiteDatabase db = helper.getWritableDatabase();
         updateList(db, today);
 
-        btnAdd.setOnClickListener(view -> sqlInit(DetailAccess.this, db, today));
+        btnAdd.setOnClickListener(view -> sqlInit(db, today));
 
         listView.setOnItemLongClickListener((adapterView, view, position, id) -> {
             ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
@@ -112,14 +113,14 @@ public class DetailAccess extends Activity {
         listView.setAdapter(adapter);
     }
 
-    void sqlInit(Context context, SQLiteDatabase db, String day) {
-        dialogView = View.inflate(context, R.layout.dialog_init,null);
+    void sqlInit(SQLiteDatabase db, String day) {
+        dialogView = View.inflate(DetailAccess.this, R.layout.dialog_init,null);
         RadioGroup drinkType = dialogView.findViewById(R.id.drinkType);
         editName = dialogView.findViewById(R.id.editName);
         editMemo = dialogView.findViewById(R.id.editMemo);
         TextView title = dialogView.findViewById(R.id.title);
         title.setText("기록 추가");
-        AlertDialog.Builder dlg = new AlertDialog.Builder(context);
+        AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
         dlg.setView(dialogView);
         dlg.setPositiveButton("확인", (dialogInterface, i) -> {
             RadioButton checked = dialogView.findViewById(drinkType.getCheckedRadioButtonId());
